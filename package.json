@@ -98,6 +98,11 @@
     }
   },
   "dependencies": {
-    "@ckeditor/ckeditor5-code-block": "^16.0.0"
+    "@ckeditor/ckeditor5-code-block": "^16.0.0",
+    "@ckeditor/ckeditor5-font": "^16.0.0",
+    "@ckeditor/ckeditor5-highlight": "^16.0.0",
+    "@ckeditor/ckeditor5-horizontal-line": "^16.0.0",
+    "@ckeditor/ckeditor5-page-break": "^16.0.0",
+    "@ckeditor/ckeditor5-remove-format": "^16.0.0"
   }
 }
