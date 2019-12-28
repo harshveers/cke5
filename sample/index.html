@@ -12,15 +12,13 @@
 </head>
 <body>
 
-<h1>CKEditor 5 – classic editor build – development sample</h1>
-
 <div id="editor">
 
 </div>
 
 <script src="../build/ckeditor.js"></script>
 <script>
-	CKEDITOR.ClassicEditor.create( document.querySelector( '#editor' ) )
+	CKEDITOR.InlineEditor.create( document.querySelector( '#editor' ) )
 		.then( editor => {
 			window.editor = editor;
 		} )
