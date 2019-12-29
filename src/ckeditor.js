@@ -8,9 +8,11 @@ import ClassicEditorBase from '@ckeditor/ckeditor5-editor-classic/src/classicedi
 import InlineEditorBase from '@ckeditor/ckeditor5-editor-inline/src/inlineeditor';
 import DocumentEditorBase from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor';
 
+import PendingActions from '@ckeditor/ckeditor5-core/src/pendingactions';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import UploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
 import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat';
+import Autosave from '@ckeditor/ckeditor5-autosave/src/autosave';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight';
@@ -58,6 +60,8 @@ const plugins = [
 	Title,
 	UploadAdapter,
 	Autoformat,
+	Autosave,
+	PendingActions,
 	Bold,
 	Italic,
 	Underline,
