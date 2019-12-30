@@ -143,7 +143,6 @@ const config = {
 	image: {
 		toolbar: [
 			'imageStyle:full',
-			'imageStyle:side',
 			'imageStyle:alignLeft',
 			'imageStyle:alignCenter',
 			'imageStyle:alignRight',
@@ -152,7 +151,6 @@ const config = {
 		],
 		styles: [
 			'full',
-			'side',
 			'alignLeft',
 			'alignCenter',
 			'alignRight'
