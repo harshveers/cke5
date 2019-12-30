@@ -105,6 +105,8 @@ DocumentEditor.builtinPlugins = plugins;
 const config = {
 	toolbar: {
 		items: [
+			'ckfinder',
+			'|',
 			'heading',
 			'fontSize',
 			'fontFamily',
