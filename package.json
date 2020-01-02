@@ -42,6 +42,7 @@
     "@ckeditor/ckeditor5-heading": "^16.0.0",
     "@ckeditor/ckeditor5-image": "^16.0.0",
     "@ckeditor/ckeditor5-indent": "^16.0.0",
+    "@ckeditor/ckeditor5-inspector": "^1.5.0",
     "@ckeditor/ckeditor5-link": "^16.0.0",
     "@ckeditor/ckeditor5-list": "^16.0.0",
     "@ckeditor/ckeditor5-media-embed": "^16.0.0",
@@ -100,11 +101,16 @@
   "dependencies": {
     "@ckeditor/ckeditor5-autosave": "^16.0.0",
     "@ckeditor/ckeditor5-code-block": "^16.0.0",
+    "@ckeditor/ckeditor5-engine": "^16.0.0",
     "@ckeditor/ckeditor5-font": "^16.0.0",
     "@ckeditor/ckeditor5-highlight": "^16.0.0",
     "@ckeditor/ckeditor5-horizontal-line": "^16.0.0",
     "@ckeditor/ckeditor5-page-break": "^16.0.0",
     "@ckeditor/ckeditor5-remove-format": "^16.0.0",
-    "@ckeditor/ckeditor5-ui": "^16.0.0"
+    "@ckeditor/ckeditor5-ui": "^16.0.0",
+    "@ckeditor/ckeditor5-widget": "^16.0.0",
+    "katex": "^0.11.1",
+    "mathjax": "^2.7.7",
+    "mathjax-full": "^3.0.0"
   }
 }

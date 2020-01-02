@@ -49,6 +49,9 @@ import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 
 import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
+import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
+
+import MathJax from './mathjax/mathjax';
 
 class ClassicEditor extends ClassicEditorBase {}
 class InlineEditor extends InlineEditorBase {}
@@ -94,7 +97,8 @@ const plugins = [
 	Table,
 	TableToolbar,
 	Alignment,
-	CodeBlock
+	CodeBlock,
+	MathJax
 ];
 
 // Plugins to include in the build.
@@ -137,7 +141,8 @@ const config = {
 			'insertTable',
 			'mediaEmbed',
 			'undo',
-			'redo'
+			'redo',
+			'mathJax'
 		]
 	},
 	image: {
