@@ -1,29 +1,8 @@
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
-
-.ck.ck-link-form {
-	display: flex;
-
-	& .ck-label {
-		display: none;
-	}
-
-	@mixin ck-media-phone {
-		flex-wrap: wrap;
-
-		& .ck-labeled-input {
-			flex-basis: 100%;
-		}
-
-		& .ck-button {
-			flex-basis: 50%;
-		}
-	}
+.ck.ck-equation-form .ck.ck-button.ck-button-preview {
+	color: #17a2b8;
+	border-right: 1px solid var(--ck-color-base-border);
 }
 
-/*
- * Style link form differently when manual decorators are available.
- * See: https://github.com/ckeditor/ckeditor5-link/issues/186.
- */
-.ck.ck-link-form_layout-vertical {
-	display: block;
+.ck.ck-equation-form .ck.ck-button.ck-button-save, .ck.ck-equation-form .ck.ck-button.ck-button-preview, .ck.ck-equation-form .ck.ck-button.ck-button-cancel {
+	width: 33.333%!important;
 }

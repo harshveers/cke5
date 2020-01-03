@@ -13,18 +13,12 @@ import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 
 import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
 import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
+import previewIcon from '../../theme/preview.svg';
 import '../../theme/mathjaxform.css';
 
+import LabeledTextAreaView from './labeledtextareaview';
+
 export default class MathJaxFormView extends View {
-	/**
-	 * Creates an instance of the {@link module:link/ui/linkformview~LinkFormView} class.
-	 *
-	 * Also see {@link #render}.
-	 *
-	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
-	 * @param {module:utils/collection~Collection} [manualDecorators] Reference to manual decorators in
-	 * {@link module:link/linkcommand~LinkCommand#manualDecorators}.
-	 */
 	constructor( locale, manualDecorators = [] ) {
 		super( locale );
 
@@ -51,7 +45,7 @@ export default class MathJaxFormView extends View {
 		 *
 		 * @member {module:ui/labeledinput/labeledinputview~LabeledInputView}
 		 */
-		this.urlInputView = this._createUrlInput();
+		this.urlInputView = this._createEquationInput();
 
 		/**
 		 * The Save button view.
@@ -67,6 +61,8 @@ export default class MathJaxFormView extends View {
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
 		this.cancelButtonView = this._createButton( t( 'Cancel' ), cancelIcon, 'ck-button-cancel', 'cancel' );
+
+		this.previewButtonView = this._createButton( t( 'Preview' ), previewIcon, 'ck-button-preview', 'preview' );
 
 		/**
 		 * A collection of {@link module:ui/button/switchbuttonview~SwitchButtonView},
@@ -116,7 +112,7 @@ export default class MathJaxFormView extends View {
 			}
 		} );
 
-		const classList = [ 'ck', 'ck-link-form' ];
+		const classList = [ 'ck', 'ck-equation-form', 'ck-link-form_layout-vertical' ];
 
 		if ( manualDecorators.length ) {
 			classList.push( 'ck-link-form_layout-vertical' );
@@ -165,6 +161,7 @@ export default class MathJaxFormView extends View {
 			this.urlInputView,
 			...this._manualDecoratorSwitches,
 			this.saveButtonView,
+			this.previewButtonView,
 			this.cancelButtonView
 		];
 
@@ -193,13 +190,22 @@ export default class MathJaxFormView extends View {
 	 * @private
 	 * @returns {module:ui/labeledinput/labeledinputview~LabeledInputView} Labeled input view instance.
 	 */
-	_createUrlInput() {
+	_createEquationInput() {
 		const t = this.locale.t;
 
-		const labeledInput = new LabeledInputView( this.locale, InputTextView );
+		const labeledInput = new LabeledTextAreaView( this.locale );
 
-		labeledInput.label = t( 'Link URL' );
-		labeledInput.inputView.placeholder = 'https://example.com';
+		labeledInput.inputView.extendTemplate({
+			attributes: {
+				rows: 5,
+				cols: 50,
+				style: 'resize: none'
+			}
+		});
+
+		labeledInput.placeholder = "Put TeX Expression Here";
+		labeledInput.label = 'TeX Expression';
+		//labeledInput.errorText = 'This is error';
 
 		return labeledInput;
 	}
@@ -313,6 +319,7 @@ export default class MathJaxFormView extends View {
 		}
 
 		children.add( this.saveButtonView );
+		children.add( this.previewButtonView );
 		children.add( this.cancelButtonView );
 
 		return children;

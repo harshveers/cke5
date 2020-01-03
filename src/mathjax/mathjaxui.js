@@ -10,10 +10,7 @@ export default class MathJaxUI extends Plugin {
 	}
     
     init() {
-        console.log( 'MathJaxUI#init() got called' );
-
         const editor = this.editor;
-        const t = editor.t;
 
         editor.editing.view.addObserver( ClickObserver );
 

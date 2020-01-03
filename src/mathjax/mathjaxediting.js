@@ -1,7 +1,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { toWidget, toWidgetEditable } from '@ckeditor/ckeditor5-widget/src/utils';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
-import InsertMathJaxCommand from './insertmathjaxcommand'; 
+import InsertMathJaxCommand from './insertmathjaxcommand';
 
 export default class MathJaxEditing extends Plugin {
     static get requires() {
@@ -9,8 +9,6 @@ export default class MathJaxEditing extends Plugin {
     }
     
     init() {
-        console.log( 'MathJaxEditing#init() got called' );
-
         this._defineSchema();
         this._defineConverters();
 
@@ -20,114 +18,85 @@ export default class MathJaxEditing extends Plugin {
     _defineSchema() {
         const schema = this.editor.model.schema;
 
-        schema.register( 'simpleBox', {
+        schema.register( 'mathJaxEquationWrapper', {
             // Behaves like a self-contained object (e.g. an image).
             isObject: true,
 
+            // The placeholder will act as an inline node:
+            isInline: true,
+
             // Allow in places where other blocks are allowed (e.g. directly in the root).
-            allowWhere: '$block'
+            allowWhere: '$text',
+
+            allowAttributes: [ 'style', 'data_equation_type', 'data_equation_value' ]
+
+            // Allowed Attributes
+            // allowAttributes: [  ]
         } );
 
-        schema.register( 'simpleBoxTitle', {
-            // Cannot be split or left by the caret.
-            isLimit: true,
+        schema.register( 'mathJaxEquationSvg', {
+            isBlock: true,
 
-            allowIn: 'simpleBox',
+            isObject: true,
 
-            // Allow content which is allowed in blocks (i.e. text with attributes).
-            allowContentOf: '$block'
-        } );
+            allowIn: 'mathJaxEquationWrapper',
 
-        schema.register( 'simpleBoxDescription', {
-            // Cannot be split or left by the caret.
-            isLimit: true,
-
-            allowIn: 'simpleBox',
-
-            // Allow content which is allowed in the root (e.g. paragraphs).
-            allowContentOf: '$root'
-        } );
-
-        schema.addChildCheck( ( context, childDefinition ) => {
-            if ( context.endsWith( 'simpleBoxDescription' ) && childDefinition.name == 'simpleBox' ) {
-                return false;
-            }
+            allowAttributes: [ 'src', 'alt', 'style' ]
         } );
     }
 
     _defineConverters() {
         const conversion = this.editor.conversion;
 
+        // <mathJaxEquationWrapper> converters
         conversion.for( 'upcast' ).elementToElement( {
-            model: 'simpleBox',
+            model: 'mathJaxEquationWrapper',
             view: {
-                name: 'section',
-                classes: 'simple-box'
+                name: 'span',
+                classes: 'mathjax-equation-wrapper'
             }
         } );
         conversion.for( 'dataDowncast' ).elementToElement( {
-            model: 'simpleBox',
+            model: 'mathJaxEquationWrapper',
             view: {
-                name: 'section',
-                classes: 'simple-box'
+                name: 'span',
+                classes: 'mathjax-equation-wrapper'
             }
         } );
         conversion.for( 'editingDowncast' ).elementToElement( {
-            model: 'simpleBox',
+            model: 'mathJaxEquationWrapper',
             view: ( modelElement, viewWriter ) => {
-                const section = viewWriter.createContainerElement( 'section', { class: 'simple-box' } );
-
-                return toWidget( section, viewWriter, { label: 'simple box widget' } );
+                const span = viewWriter.createContainerElement( 'span', { class: 'mathjax-equation-wrapper' } );
+                viewWriter.setAttribute('style', modelElement.getAttribute('style'), span);
+                viewWriter.setAttribute('data_equation_type', modelElement.getAttribute('data_equation_type'), span);
+                viewWriter.setAttribute('data_equation_value', modelElement.getAttribute('data_equation_value'), span);
+                return toWidget( span, viewWriter, { label: 'MathJax Equation Widget' } );
             }
         } );
 
-        // <simpleBoxTitle> converters
+        // <mathJaxEquationSvg> converters
         conversion.for( 'upcast' ).elementToElement( {
-            model: 'simpleBoxTitle',
+            model: 'mathJaxEquationSvg',
             view: {
-                name: 'h1',
-                classes: 'simple-box-title'
+                name: 'img',
+                classes: 'mathjax-equation-svg'
             }
         } );
         conversion.for( 'dataDowncast' ).elementToElement( {
-            model: 'simpleBoxTitle',
+            model: 'mathJaxEquationSvg',
             view: {
-                name: 'h1',
-                classes: 'simple-box-title'
+                name: 'img',
+                classes: 'mathjax-equation-svg'
             }
         } );
         conversion.for( 'editingDowncast' ).elementToElement( {
-            model: 'simpleBoxTitle',
-            view: ( modelElement, viewWriter ) => {
-                // Note: You use a more specialized createEditableElement() method here.
-                const h1 = viewWriter.createEditableElement( 'h1', { class: 'simple-box-title' } );
-
-                return toWidgetEditable( h1, viewWriter );
-            }
-        } );
-
-        // <simpleBoxDescription> converters
-        conversion.for( 'upcast' ).elementToElement( {
-            model: 'simpleBoxDescription',
-            view: {
-                name: 'div',
-                classes: 'simple-box-description'
-            }
-        } );
-        conversion.for( 'dataDowncast' ).elementToElement( {
-            model: 'simpleBoxDescription',
-            view: {
-                name: 'div',
-                classes: 'simple-box-description'
-            }
-        } );
-        conversion.for( 'editingDowncast' ).elementToElement( {
-            model: 'simpleBoxDescription',
+            model: 'mathJaxEquationSvg',
             view: ( modelElement, viewWriter ) => {
                 // Note: You use a more specialized createEditableElement() method here.
-                const div = viewWriter.createEditableElement( 'div', { class: 'simple-box-description' } );
-
-                return toWidgetEditable( div, viewWriter );
+                const svg = viewWriter.createEmptyElement( 'img', { class: 'mathjax-equation-svg' } );
+                viewWriter.setAttribute('src', modelElement.getAttribute('src'), svg);
+                viewWriter.setAttribute('style', modelElement.getAttribute('style'), svg);
+                return toWidgetEditable( svg, viewWriter );
             }
         } );
     }
