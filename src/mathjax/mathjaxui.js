@@ -2,6 +2,7 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
+import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsidehandler';
 import MathJaxFormView from './ui/mathjaxformview';
 
 export default class MathJaxUI extends Plugin {
@@ -10,7 +11,9 @@ export default class MathJaxUI extends Plugin {
 	}
     
     init() {
-        const editor = this.editor;
+		const editor = this.editor;
+		
+		this.originalSelection = null;
 
         editor.editing.view.addObserver( ClickObserver );
 
@@ -18,8 +21,55 @@ export default class MathJaxUI extends Plugin {
 
         this._balloon = editor.plugins.get( ContextualBalloon );
 
-        this._createToolbarLinkButton();
-    }
+		this._createToolbarLinkButton();
+		
+		this._setupMathJaxBaloonInteraction();
+	}
+	
+	_setupMathJaxBaloonInteraction() {
+		const viewDocument = this.editor.editing.view.document;
+
+		// Handle click on view document and show panel when selection is placed inside the link element.
+		// Keep panel open until selection will be inside the same link element.
+		this.listenTo( viewDocument, 'click', () => {
+			const equationSelection = this._getSelectedEquationWrapperElement();
+
+			// if (this._isFormInPanel) {
+			// 	console.log(this.originalSelection);
+			// 	this.editor.editing.view.document.selection = this.originalSelection;
+			// 	this.editor.model.change( writer => {
+			// 		writer.setSelection(this.originalSelection.getFirstRange());
+			// 	});
+			// 	return;
+			// }
+
+			if ( equationSelection || this._isFormInPanel ) {
+				// Then show panel but keep focus inside editor editable.
+				this._showUI();
+			}
+		} );
+
+		// Close on click outside of balloon panel element.
+		// clickOutsideHandler( {
+		// 	emitter: this.formView,
+		// 	activator: () => this._isFormInPanel,
+		// 	contextElements: [ this._balloon.view.element ],
+		// 	callback: () => this._closeFormView()
+		// } );
+	}
+
+	_getSelectedEquationWrapperElement() {
+		const view = this.editor.editing.view;
+		const selection = view.document.selection;
+
+		if ( !selection.isCollapsed ) {
+			const selectedElement = selection.getSelectedElement();
+			if (selectedElement && selectedElement.getCustomProperty( 'widget' ) && selectedElement.getCustomProperty( 'widgetLabel' ) == 'mathJaxEquationWidget') {
+				return selection;
+			}
+		}
+		return null;
+	}
 
     _createToolbarLinkButton() {
         const editor = this.editor;
@@ -63,22 +113,25 @@ export default class MathJaxUI extends Plugin {
     }
 
     _addFormView() {
-		if ( this._isFormInPanel ) {
-			return;
-		}
-
 		const editor = this.editor;
 		const mathJaxCommand = editor.commands.get( 'insertMathJax' );
 
-		this._balloon.add( {
-			view: this.formView,
-			position: this._getBalloonPositionData()
-		} );
+		if ( this._isFormInPanel ) {
+			this._balloon.updatePosition(this._getBalloonPositionData());
+		} else {
+			this._balloon.add( {
+				view: this.formView,
+				position: this._getBalloonPositionData()
+			} );
+			this.originalSelection = this.editor.editing.view.document.selection;
+		}
 
 		// Select input when form view is currently visible.
-		if ( this._balloon.visibleView === this.formView ) {
-			this.formView.urlInputView.select();
-		}
+		//if ( this._balloon.visibleView === this.formView ) {
+		//	this.formView.urlInputView.select();
+		//}
+
+		this.formView.urlInputView.select();
 
 		// Make sure that each time the panel shows up, the URL field remains in sync with the value of
 		// the command. If the user typed in the input, then canceled the balloon (`urlInputView#value` stays

@@ -34,7 +34,14 @@ export default class InsertMathJaxCommand extends Command {
     refresh() {
         const model = this.editor.model;
         const selection = model.document.selection;
+        // this.value = selection.getAttribute('data_equation_value');
         const allowedIn = model.schema.findAllowedParent( selection.getFirstPosition(), 'mathJaxEquationWrapper' );
+
+        // Check if slected element is mathJaxEquationWrapper
+        this.value = '';
+        if (!selection.isCollapsed && selection.getSelectedElement()) {
+            this.value = selection.getSelectedElement().getAttribute('data_equation_value');
+        }
 
         this.isEnabled = allowedIn !== null;
     }

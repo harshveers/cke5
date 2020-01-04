@@ -35,9 +35,9 @@ export default class MathJaxEditing extends Plugin {
         } );
 
         schema.register( 'mathJaxEquationSvg', {
-            isBlock: true,
+            isLimit: true,
 
-            isObject: true,
+            //isObject: true,
 
             allowIn: 'mathJaxEquationWrapper',
 
@@ -70,7 +70,7 @@ export default class MathJaxEditing extends Plugin {
                 viewWriter.setAttribute('style', modelElement.getAttribute('style'), span);
                 viewWriter.setAttribute('data_equation_type', modelElement.getAttribute('data_equation_type'), span);
                 viewWriter.setAttribute('data_equation_value', modelElement.getAttribute('data_equation_value'), span);
-                return toWidget( span, viewWriter, { label: 'MathJax Equation Widget' } );
+                return toWidget( span, viewWriter, { label: 'mathJaxEquationWidget' } );
             }
         } );
 
