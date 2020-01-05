@@ -48,7 +48,7 @@ export default class InsertMathJaxCommand extends Command {
 
     createMathJaxEquation( writer, mathExpression, expressionType, svg ) {
         const mathJaxEquationWrapper = writer.createElement( 'mathJaxEquationWrapper', {
-            style: 'vertical-align: -webkit-baseline-middle;',
+            style: 'vertical-align: text-bottom;',
             data_equation_type: expressionType,
             data_equation_value: mathExpression
         } );
