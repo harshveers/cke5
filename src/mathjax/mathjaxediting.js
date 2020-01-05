@@ -50,7 +50,13 @@ export default class MathJaxEditing extends Plugin {
 
         // <mathJaxEquationWrapper> converters
         conversion.for( 'upcast' ).elementToElement( {
-            model: 'mathJaxEquationWrapper',
+            model: ( viewElement, modelWriter ) => {
+                return modelWriter.createElement( 'mathJaxEquationWrapper', { 
+                    style: viewElement.getAttribute( 'style' ),
+                    data_equation_type: viewElement.getAttribute( 'data_equation_type' ),
+                    data_equation_value: viewElement.getAttribute( 'data_equation_value' )
+                } );
+            },
             view: {
                 name: 'span',
                 classes: 'mathjax-equation-wrapper'
@@ -58,9 +64,12 @@ export default class MathJaxEditing extends Plugin {
         } );
         conversion.for( 'dataDowncast' ).elementToElement( {
             model: 'mathJaxEquationWrapper',
-            view: {
-                name: 'span',
-                classes: 'mathjax-equation-wrapper'
+            view: ( modelElement, viewWriter ) => {
+                const span = viewWriter.createContainerElement( 'span', { class: 'mathjax-equation-wrapper' } );
+                viewWriter.setAttribute('style', modelElement.getAttribute('style'), span);
+                viewWriter.setAttribute('data_equation_type', modelElement.getAttribute('data_equation_type'), span);
+                viewWriter.setAttribute('data_equation_value', modelElement.getAttribute('data_equation_value'), span);
+                return span;
             }
         } );
         conversion.for( 'editingDowncast' ).elementToElement( {
@@ -77,6 +86,12 @@ export default class MathJaxEditing extends Plugin {
         // <mathJaxEquationSvg> converters
         conversion.for( 'upcast' ).elementToElement( {
             model: 'mathJaxEquationSvg',
+            model: ( viewElement, modelWriter ) => {
+                return modelWriter.createElement( 'mathJaxEquationSvg', { 
+                    style: viewElement.getAttribute( 'style' ),
+                    src: viewElement.getAttribute( 'src' )
+                } );
+            },
             view: {
                 name: 'img',
                 classes: 'mathjax-equation-svg'
@@ -84,9 +99,12 @@ export default class MathJaxEditing extends Plugin {
         } );
         conversion.for( 'dataDowncast' ).elementToElement( {
             model: 'mathJaxEquationSvg',
-            view: {
-                name: 'img',
-                classes: 'mathjax-equation-svg'
+            view: ( modelElement, viewWriter ) => {
+                // Note: You use a more specialized createEditableElement() method here.
+                const svg = viewWriter.createEmptyElement( 'img', { class: 'mathjax-equation-svg' } );
+                viewWriter.setAttribute('src', modelElement.getAttribute('src'), svg);
+                viewWriter.setAttribute('style', modelElement.getAttribute('style'), svg);
+                return svg;
             }
         } );
         conversion.for( 'editingDowncast' ).elementToElement( {
