@@ -1,8 +1,0 @@
-.ck.ck-equation-form .ck.ck-button.ck-button-preview {
-	color: #17a2b8;
-	border-right: 1px solid var(--ck-color-base-border);
-}
-
-.ck.ck-equation-form .ck.ck-button.ck-button-save, .ck.ck-equation-form .ck.ck-button.ck-button-preview, .ck.ck-equation-form .ck.ck-button.ck-button-cancel {
-	width: 33.333%!important;
-}

@@ -1,16 +1,10 @@
 import View from '@ckeditor/ckeditor5-ui/src/view';
 import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
-
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import SwitchButtonView from '@ckeditor/ckeditor5-ui/src/button/switchbuttonview';
-import LabeledInputView from '@ckeditor/ckeditor5-ui/src/labeledinput/labeledinputview';
-import InputTextView from '@ckeditor/ckeditor5-ui/src/inputtext/inputtextview';
-
 import submitHandler from '@ckeditor/ckeditor5-ui/src/bindings/submithandler';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
-
 import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
 import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 import previewIcon from '../../theme/preview.svg';
@@ -19,86 +13,21 @@ import '../../theme/mathjaxform.css';
 import LabeledTextAreaView from './labeledtextareaview';
 
 export default class MathJaxFormView extends View {
-	constructor( locale, manualDecorators = [] ) {
+	constructor( locale ) {
 		super( locale );
 
 		const t = locale.t;
 
-		/**
-		 * Tracks information about DOM focus in the form.
-		 *
-		 * @readonly
-		 * @member {module:utils/focustracker~FocusTracker}
-		 */
 		this.focusTracker = new FocusTracker();
-
-		/**
-		 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
-		 *
-		 * @readonly
-		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
-		 */
 		this.keystrokes = new KeystrokeHandler();
-
-		/**
-		 * The URL input view.
-		 *
-		 * @member {module:ui/labeledinput/labeledinputview~LabeledInputView}
-		 */
-		this.urlInputView = this._createEquationInput();
-
-		/**
-		 * The Save button view.
-		 *
-		 * @member {module:ui/button/buttonview~ButtonView}
-		 */
+		this.equationInputView = this._createEquationInput();
 		this.saveButtonView = this._createButton( t( 'Save' ), checkIcon, 'ck-button-save' );
 		this.saveButtonView.type = 'submit';
-
-		/**
-		 * The Cancel button view.
-		 *
-		 * @member {module:ui/button/buttonview~ButtonView}
-		 */
 		this.cancelButtonView = this._createButton( t( 'Cancel' ), cancelIcon, 'ck-button-cancel', 'cancel' );
-
-		this.previewButtonView = this._createButton( t( 'Preview' ), previewIcon, 'ck-button-preview', 'preview' );
-
-		/**
-		 * A collection of {@link module:ui/button/switchbuttonview~SwitchButtonView},
-		 * which corresponds to {@link module:link/linkcommand~LinkCommand#manualDecorators manual decorators}
-		 * configured in the editor.
-		 *
-		 * @private
-		 * @readonly
-		 * @type {module:ui/viewcollection~ViewCollection}
-		 */
-		this._manualDecoratorSwitches = this._createManualDecoratorSwitches( manualDecorators );
-
-		/**
-		 * A collection of child views in the form.
-		 *
-		 * @readonly
-		 * @type {module:ui/viewcollection~ViewCollection}
-		 */
-		this.children = this._createFormChildren( manualDecorators );
-
-		/**
-		 * A collection of views that can be focused in the form.
-		 *
-		 * @readonly
-		 * @protected
-		 * @member {module:ui/viewcollection~ViewCollection}
-		 */
+		// this.previewButtonView = this._createButton( t( 'Preview' ), previewIcon, 'ck-button-preview', 'preview' );
+		this.children = this._createFormChildren();
 		this._focusables = new ViewCollection();
 
-		/**
-		 * Helps cycling over {@link #_focusables} in the form.
-		 *
-		 * @readonly
-		 * @protected
-		 * @member {module:ui/focuscycler~FocusCycler}
-		 */
 		this._focusCycler = new FocusCycler( {
 			focusables: this._focusables,
 			focusTracker: this.focusTracker,
@@ -113,10 +42,6 @@ export default class MathJaxFormView extends View {
 		} );
 
 		const classList = [ 'ck', 'ck-equation-form', 'ck-link-form_layout-vertical' ];
-
-		if ( manualDecorators.length ) {
-			classList.push( 'ck-link-form_layout-vertical' );
-		}
 
 		this.setTemplate( {
 			tag: 'form',
@@ -133,21 +58,6 @@ export default class MathJaxFormView extends View {
 	}
 
 	/**
-	 * Obtains the state of the {@link module:ui/button/switchbuttonview~SwitchButtonView switch buttons} representing
-	 * {@link module:link/linkcommand~LinkCommand#manualDecorators manual link decorators}
-	 * in the {@link module:link/ui/linkformview~LinkFormView}.
-	 *
-	 * @returns {Object.<String,Boolean>} Key-value pairs, where the key is the name of the decorator and the value is
-	 * its state.
-	 */
-	getDecoratorSwitchesState() {
-		return Array.from( this._manualDecoratorSwitches ).reduce( ( accumulator, switchButton ) => {
-			accumulator[ switchButton.name ] = switchButton.isOn;
-			return accumulator;
-		}, {} );
-	}
-
-	/**
 	 * @inheritDoc
 	 */
 	render() {
@@ -158,10 +68,8 @@ export default class MathJaxFormView extends View {
 		} );
 
 		const childViews = [
-			this.urlInputView,
-			...this._manualDecoratorSwitches,
+			this.equationInputView,
 			this.saveButtonView,
-			this.previewButtonView,
 			this.cancelButtonView
 		];
 
@@ -177,19 +85,10 @@ export default class MathJaxFormView extends View {
 		this.keystrokes.listenTo( this.element );
 	}
 
-	/**
-	 * Focuses the fist {@link #_focusables} in the form.
-	 */
 	focus() {
 		this._focusCycler.focusFirst();
 	}
 
-	/**
-	 * Creates a labeled input view.
-	 *
-	 * @private
-	 * @returns {module:ui/labeledinput/labeledinputview~LabeledInputView} Labeled input view instance.
-	 */
 	_createEquationInput() {
 		const t = this.locale.t;
 
@@ -205,21 +104,10 @@ export default class MathJaxFormView extends View {
 
 		labeledInput.placeholder = "Put TeX Expression Here";
 		labeledInput.label = 'TeX Expression';
-		//labeledInput.errorText = 'This is error';
 
 		return labeledInput;
 	}
 
-	/**
-	 * Creates a button view.
-	 *
-	 * @private
-	 * @param {String} label The button label.
-	 * @param {String} icon The button icon.
-	 * @param {String} className The additional button CSS class name.
-	 * @param {String} [eventName] An event name that the `ButtonView#execute` event will be delegated to.
-	 * @returns {module:ui/button/buttonview~ButtonView} The button view instance.
-	 */
 	_createButton( label, icon, className, eventName ) {
 		const button = new ButtonView( this.locale );
 
@@ -242,84 +130,13 @@ export default class MathJaxFormView extends View {
 		return button;
 	}
 
-	/**
-	 * Populates {@link module:ui/viewcollection~ViewCollection} of {@link module:ui/button/switchbuttonview~SwitchButtonView}
-	 * made based on {@link module:link/linkcommand~LinkCommand#manualDecorators}.
-	 *
-	 * @private
-	 * @param {module:utils/collection~Collection} manualDecorators A reference to the
-	 * collection of manual decorators stored in the link command.
-	 * @returns {module:ui/viewcollection~ViewCollection} of switch buttons.
-	 */
-	_createManualDecoratorSwitches( manualDecorators ) {
-		const switches = this.createCollection();
-
-		for ( const manualDecorator of manualDecorators ) {
-			const switchButton = new SwitchButtonView( this.locale );
-
-			switchButton.set( {
-				name: manualDecorator.id,
-				label: manualDecorator.label,
-				withText: true
-			} );
-
-			switchButton.bind( 'isOn' ).to( manualDecorator, 'value' );
-
-			switchButton.on( 'execute', () => {
-				manualDecorator.set( 'value', !switchButton.isOn );
-			} );
-
-			switches.add( switchButton );
-		}
-
-		return switches;
-	}
-
-	/**
-	 * Populates the {@link #children} collection of the form.
-	 *
-	 * If {@link module:link/linkcommand~LinkCommand#manualDecorators manual decorators} are configured in the editor, it creates an
-	 * additional `View` wrapping all {@link #_manualDecoratorSwitches} switch buttons corresponding
-	 * to these decorators.
-	 *
-	 * @private
-	 * @param {module:utils/collection~Collection} manualDecorators A reference to
-	 * the collection of manual decorators stored in the link command.
-	 * @returns {module:ui/viewcollection~ViewCollection} The children of link form view.
-	 */
-	_createFormChildren( manualDecorators ) {
+	_createFormChildren() {
 		const children = this.createCollection();
 
-		children.add( this.urlInputView );
-
-		if ( manualDecorators.length ) {
-			const additionalButtonsView = new View();
-
-			additionalButtonsView.setTemplate( {
-				tag: 'ul',
-				children: this._manualDecoratorSwitches.map( switchButton => ( {
-					tag: 'li',
-					children: [ switchButton ],
-					attributes: {
-						class: [
-							'ck',
-							'ck-list__item'
-						]
-					}
-				} ) ),
-				attributes: {
-					class: [
-						'ck',
-						'ck-reset',
-						'ck-list'
-					]
-				}
-			} );
-			children.add( additionalButtonsView );
-		}
+		children.add( this.equationInputView );
 
 		children.add( this.saveButtonView );
-		children.add( this.previewButtonView );
+		// children.add( this.previewButtonView );
 		children.add( this.cancelButtonView );
 
 		return children;

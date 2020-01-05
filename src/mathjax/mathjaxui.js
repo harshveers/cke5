@@ -4,6 +4,7 @@ import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobs
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
 import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsidehandler';
 import MathJaxFormView from './ui/mathjaxformview';
+import functionIcon from '../theme/function.svg';
 
 export default class MathJaxUI extends Plugin {
     static get requires() {
@@ -88,8 +89,9 @@ export default class MathJaxUI extends Plugin {
                 // The t() function helps localize the editor. All strings enclosed in t() can be
                 // translated and change when the language of the editor changes.
                 label: t( 'Equation Editor' ),
-                withText: true,
-                tooltip: true
+                withText: false,
+				tooltip: true,
+				icon: functionIcon
             } );
 
             // Bind the state of the button to the command.
@@ -128,18 +130,18 @@ export default class MathJaxUI extends Plugin {
 
 		// Select input when form view is currently visible.
 		//if ( this._balloon.visibleView === this.formView ) {
-		//	this.formView.urlInputView.select();
+		//	this.formView.equationInputView.select();
 		//}
 
-		this.formView.urlInputView.select();
+		this.formView.equationInputView.select();
 
 		// Make sure that each time the panel shows up, the URL field remains in sync with the value of
-		// the command. If the user typed in the input, then canceled the balloon (`urlInputView#value` stays
+		// the command. If the user typed in the input, then canceled the balloon (`equationInputView#value` stays
 		// unaltered) and re-opened it without changing the value of the link command (e.g. because they
 		// clicked the same link), they would see the old value instead of the actual value of the command.
 		// https://github.com/ckeditor/ckeditor5-link/issues/78
 		// https://github.com/ckeditor/ckeditor5-link/issues/123
-		this.formView.urlInputView.inputView.element.value = mathJaxCommand.value || '';
+		this.formView.equationInputView.inputView.element.value = mathJaxCommand.value || '';
     }
     
     _getBalloonPositionData() {
@@ -162,16 +164,16 @@ export default class MathJaxUI extends Plugin {
 
 		const formView = new MathJaxFormView( editor.locale );
 
-		// formView.urlInputView.bind( 'value' ).to( mathJaxCommand, 'value' );
+		// formView.equationInputView.bind( 'value' ).to( mathJaxCommand, 'value' );
 
 		// Form elements should be read-only when corresponding commands are disabled.
-		formView.urlInputView.bind( 'isReadOnly' ).to( mathJaxCommand, 'isEnabled', value => !value );
+		formView.equationInputView.bind( 'isReadOnly' ).to( mathJaxCommand, 'isEnabled', value => !value );
 		formView.saveButtonView.bind( 'isEnabled' ).to( mathJaxCommand );
 
 		// Execute link command after clicking the "Save" button.
 		this.listenTo( formView, 'submit', () => {
-            // editor.execute( 'insertMathJax', formView.urlInputView.inputView.element.value, formView.getDecoratorSwitchesState() );
-            editor.execute( 'insertMathJax', formView.urlInputView.inputView.element.value );
+            // editor.execute( 'insertMathJax', formView.equationInputView.inputView.element.value, formView.getDecoratorSwitchesState() );
+            editor.execute( 'insertMathJax', formView.equationInputView.inputView.element.value );
 			this._closeFormView();
 		} );
 
@@ -189,19 +191,7 @@ export default class MathJaxUI extends Plugin {
 		return formView;
     }
     
-    _closeFormView() {
-		/* const linkCommand = this.editor.commands.get( 'link' );
-
-		// Restore manual decorator states to represent the current model state. This case is important to reset the switch buttons
-		// when the user cancels the editing form.
-		linkCommand.restoreManualDecoratorStates();
-
-		if ( linkCommand.value !== undefined ) {
-			this._removeFormView();
-		} else {
-			this._hideUI();
-        } */
-        
+    _closeFormView() {        
         this._removeFormView();
     }
     

@@ -4,54 +4,11 @@ export default class TextAreaView extends View {
     constructor( locale ) {
         super( locale );
 
-        /**
-		 * The value of the input.
-		 *
-		 * @observable
-		 * @member {String} #value
-		 */
 		this.set( 'value' );
-
-		/**
-		 * The `id` attribute of the textarea (i.e. to pair with a `<label>` element).
-		 *
-		 * @observable
-		 * @member {String} #id
-		 */
 		this.set( 'id' );
-
-		/**
-		 * The `placeholder` attribute of the textarea.
-		 *
-		 * @observable
-		 * @member {String} #placeholder
-		 */
 		this.set( 'placeholder' );
-
-		/**
-		 * Controls whether the textarea view is in read-only mode.
-		 *
-		 * @observable
-		 * @member {Boolean} #isReadOnly
-		 */
 		this.set( 'isReadOnly', false );
-
-		/**
-		 * Set to `true` when the field has some error. Usually controlled via
-		 * {@link module:ui/labeledinput/labeledinputview~LabeledInputView#errorText}.
-		 *
-		 * @observable
-		 * @member {Boolean} #hasError
-		 */
 		this.set( 'hasError', false );
-
-		/**
-		 * The `id` of the element describing this field, e.g. when it has
-		 * some error, it helps screen readers read the error text.
-		 *
-		 * @observable
-		 * @member {Boolean} #ariaDescribedById
-		 */
 		this.set( 'ariaDescribedById' );
 
 		const bind = this.bindTemplate;
@@ -78,9 +35,6 @@ export default class TextAreaView extends View {
         } );
     }
 
-    /**
-	 * @inheritDoc
-	 */
 	render() {
 		super.render();
 
@@ -97,16 +51,10 @@ export default class TextAreaView extends View {
 		} );
 	}
 
-    /**
-	 * Moves the focus to the textarea and selects the value.
-	 */
 	select() {
 		this.element.select();
 	}
 
-	/**
-	 * Focuses the textarea.
-	 */
 	focus() {
 		this.element.focus();
 	}
