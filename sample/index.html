@@ -25,6 +25,16 @@
 		.then( editor => {
 			CKEditorInspector.attach( editor );
 			window.editor = editor;
+			editor.config = {
+				manualSave: {
+					saveClicked: function () {
+						console.log('save Called');
+					},
+					cancelClicked: function () {
+						console.log('cancel Called');
+					}
+				}
+			}
 		} )
 		.catch( error => {
 			console.error( 'There was a problem initializing the editor.', error );

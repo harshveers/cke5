@@ -52,12 +52,14 @@ import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
 import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
 
 import MathJax from './mathjax/mathjax';
+import ManualSave from './manualsave/manualsave';
 
 class ClassicEditor extends ClassicEditorBase {}
 class InlineEditor extends InlineEditorBase {}
 class DocumentEditor extends DocumentEditorBase {}
 
 const plugins = [
+	ManualSave,
 	Essentials,
 	PasteFromOffice,
 	Title,
@@ -109,6 +111,9 @@ DocumentEditor.builtinPlugins = plugins;
 const config = {
 	toolbar: {
 		items: [
+			'manualSaveSaveButton',
+			'manualSaveCancelButton',
+			'|',
 			'heading',
 			'fontSize',
 			'fontFamily',
