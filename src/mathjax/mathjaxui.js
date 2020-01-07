@@ -44,10 +44,21 @@ export default class MathJaxUI extends Plugin {
 			// 	return;
 			// }
 
-			if ( equationSelection || this._isFormInPanel ) {
-				// Then show panel but keep focus inside editor editable.
-				this._showUI();
+			if (this.editor.isReadOnly) {
+				return;
 			}
+
+			if (editor.commands.get( 'insertMathJax' ).isEnabled) {
+				if ( equationSelection || this._isFormInPanel ) {
+					// Then show panel but keep focus inside editor editable.
+					this._showUI();
+				}
+			} else {
+				if (this._isFormInPanel) {
+					this._closeFormView();
+				}
+			}
+			
 		} );
 
 		// Close on click outside of balloon panel element.
