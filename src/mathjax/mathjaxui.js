@@ -48,7 +48,7 @@ export default class MathJaxUI extends Plugin {
 				return;
 			}
 
-			if (editor.commands.get( 'insertMathJax' ).isEnabled) {
+			if (this.editor.commands.get( 'insertMathJax' ).isEnabled) {
 				if ( equationSelection || this._isFormInPanel ) {
 					// Then show panel but keep focus inside editor editable.
 					this._showUI();
