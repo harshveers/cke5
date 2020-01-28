@@ -253,13 +253,7 @@ const config = {
 			13,
 			14,
 			15,
-			'default',
-			17,
-			19,
-			21,
-			25,
-			27,
-			30
+			'default'
 		]
 	},
 	fontColor: {
