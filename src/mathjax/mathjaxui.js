@@ -62,12 +62,12 @@ export default class MathJaxUI extends Plugin {
 		} );
 
 		// Close on click outside of balloon panel element.
-		// clickOutsideHandler( {
-		// 	emitter: this.formView,
-		// 	activator: () => this._isFormInPanel,
-		// 	contextElements: [ this._balloon.view.element ],
-		// 	callback: () => this._closeFormView()
-		// } );
+		clickOutsideHandler( {
+			emitter: this.formView,
+			activator: () => this._isFormInPanel,
+			contextElements: [ this._balloon.view.element ],
+			callback: () => this._closeFormView()
+		} );
 	}
 
 	_getSelectedEquationWrapperElement() {
