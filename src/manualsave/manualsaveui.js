@@ -23,11 +23,11 @@ export default class MathJaxUI extends Plugin {
             const buttonView = new ButtonView( locale );
 
             buttonView.set( {
-                label: t( 'Save Changes' ),
+                label: t( 'Save and Close' ),
                 withText: false,
 				tooltip: true,
 				icon: checkIcon,
-				class: 'ck-button-manual-save'
+				class: ['ck-button-manual-save', 'ck-button-save']
             } );
             buttonView.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
 			this.listenTo( buttonView, 'execute', () => editor.execute( 'manualSave', true ) );
@@ -40,11 +40,11 @@ export default class MathJaxUI extends Plugin {
             const buttonView = new ButtonView( locale );
 
             buttonView.set( {
-                label: t( 'Discard Changes' ),
+                label: t( 'Discard and Close' ),
                 withText: false,
 				tooltip: true,
 				icon: cancelIcon,
-				class: 'ck-button-manual-cancel'
+				class: ['ck-button-manual-cancel', 'ck-button-cancel']
             } );
             buttonView.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
 			this.listenTo( buttonView, 'execute', () => editor.execute( 'manualSave', false ) );
