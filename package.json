@@ -101,6 +101,7 @@
   "dependencies": {
     "@ckeditor/ckeditor5-autosave": "^16.0.0",
     "@ckeditor/ckeditor5-code-block": "^16.0.0",
+    "@ckeditor/ckeditor5-editor-balloon": "^16.0.0",
     "@ckeditor/ckeditor5-engine": "^16.0.0",
     "@ckeditor/ckeditor5-font": "^16.0.0",
     "@ckeditor/ckeditor5-highlight": "^16.0.0",

@@ -7,6 +7,7 @@
 import ClassicEditorBase from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import InlineEditorBase from '@ckeditor/ckeditor5-editor-inline/src/inlineeditor';
 import DocumentEditorBase from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor';
+import BalloonEditorBase from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
 
 import PendingActions from '@ckeditor/ckeditor5-core/src/pendingactions';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
@@ -26,6 +27,7 @@ import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
 import Subscript from '@ckeditor/ckeditor5-basic-styles/src/subscript';
 import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
+import BlockToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/block/blocktoolbar';
 import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
@@ -54,9 +56,12 @@ import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
 import MathJax from './mathjax/mathjax';
 import ManualSave from './manualsave/manualsave';
 
+import './theme/theme.css';
+
 class ClassicEditor extends ClassicEditorBase {}
 class InlineEditor extends InlineEditorBase {}
 class DocumentEditor extends DocumentEditorBase {}
+class BalloonBlockEditor extends BalloonEditorBase {}
 
 const plugins = [
 	ManualSave,
@@ -102,11 +107,6 @@ const plugins = [
 	CodeBlock,
 	MathJax
 ];
-
-// Plugins to include in the build.
-ClassicEditor.builtinPlugins = plugins;
-InlineEditor.builtinPlugins = plugins;
-DocumentEditor.builtinPlugins = plugins;
 
 const config = {
 	toolbar: {
@@ -507,11 +507,63 @@ const config = {
 	language: 'en'
 };
 
+// Plugins to include in the build.
+ClassicEditor.builtinPlugins = plugins;
+InlineEditor.builtinPlugins = plugins;
+DocumentEditor.builtinPlugins = plugins;
+BalloonBlockEditor.builtinPlugins = plugins.slice(0); // Clone plugins array
+
+// Extra plugins for BalloonBlockEditor.
+BalloonBlockEditor.builtinPlugins.push(BlockToolbar);
+
 // Editor configuration.
 ClassicEditor.defaultConfig = config;
 InlineEditor.defaultConfig = config;
 DocumentEditor.defaultConfig = config;
+BalloonBlockEditor.defaultConfig = JSON.parse(JSON.stringify(config)); // Clone config object
+
+// Extra config for BalloonBlockEditor.
+BalloonBlockEditor.defaultConfig.toolbar = {
+	items: [
+		'bold',
+		'italic',
+		'underline',
+		'strikethrough',
+		'link',
+		'fontColor',
+		'fontBackgroundColor',
+		'highlight',
+		'code',
+		'subscript',
+		'superscript',
+		'removeFormat',
+	]
+};
+BalloonBlockEditor.defaultConfig.blockToolbar = [
+	'heading',
+	'fontSize',
+	'fontFamily',
+	'|',
+	'alignment',
+	'bulletedList',
+	'numberedList',
+	'todoList',
+	'codeBlock',
+	'|',
+	'indent',
+	'outdent',
+	'horizontalLine',
+	'pageBreak',
+	'|',
+	'imageUpload',
+	'blockQuote',
+	'insertTable',
+	'mediaEmbed',
+	'undo',
+	'redo',
+	'mathJax'
+];
 
 export default {
-	ClassicEditor, InlineEditor, DocumentEditor
+	ClassicEditor, InlineEditor, DocumentEditor, BalloonBlockEditor
 };

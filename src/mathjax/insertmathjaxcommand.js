@@ -16,7 +16,7 @@ const svg = new SVG();
 
 export default class InsertMathJaxCommand extends Command {
     execute(mathExpression) {
-        var mathJaxConfig = this.editor.config.get ( 'mathJax' );
+        //var mathJaxConfig = this.editor.config.get ( 'mathJax' );
         this.editor.model.change( writer => {
             const html = mathjax2.document('', {InputJax: tex, OutputJax: svg});
     
